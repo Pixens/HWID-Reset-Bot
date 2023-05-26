@@ -1,7 +1,7 @@
 import discord, os, sys
-from discord import Option
 from functions import *
 import json
+from discord.ext import commands
 
 
 
@@ -17,8 +17,8 @@ def load_apps():
         
     return applications
 
-activity = discord.Activity(type=discord.ActivityType.watching, name = "boostup.cc")
-bot = discord.Bot(command_prefix = ">", intents = discord.Intents.all(), activity = activity)
+activity = discord.Activity(type=discord.ActivityType.watching, name = "api")
+bot = commands.Bot(command_prefix = ">", intents = discord.Intents.all(), activity = activity)
 
 @bot.event
 async def on_ready():
@@ -27,7 +27,7 @@ async def on_ready():
 
 
 @bot.slash_command(guild_ids = [config["guildID"]], name="addapp", description="Add an application.")
-async def addapp(ctx, sellerkey: Option(str, "Keyauth application seller key", required = True)):
+async def addapp(ctx, sellerkey: discord.Option(str, "Keyauth application seller key", required = True)):
     
     if ctx.author.id not in config["whitelist"]:
         return await ctx.respond(embed = discord.Embed(description = f"You don't have permission to use this comamnd.", color = 0xFF0000))
@@ -48,7 +48,7 @@ async def addapp(ctx, sellerkey: Option(str, "Keyauth application seller key", r
     
 
 @bot.slash_command(guild_ids = [config["guildID"]], name="hwidreset", description="Reset HWID of a user.")
-async def hwidreset(ctx, application: Option(str, "Choose an application", choices = load_apps(), required = True), user: Option(str, "Keyauth username.", required = True)):
+async def hwidreset(ctx, application: discord.Option(str, choices = load_apps(), required = True), user: discord.Option(str, "Keyauth username.", required = True)):
     
     if ctx.author.id not in config["whitelist"]:
         return await ctx.respond(embed = discord.Embed(description = f"You don't have permission to use this comamnd.", color = 0xFF0000))
